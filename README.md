@@ -2,12 +2,6 @@
 
 **Modern, tree-shakeable URL query string parser/stringifier** with native TypeScript support.
 
-[![npm version](https://img.shields.io/npm/v/@lpm.dev/neo.query.svg)](https://www.npmjs.com/package/@lpm.dev/neo.query)
-[![Bundle size](https://img.shields.io/bundlephobia/minzip/@lpm.dev/neo.query.svg)](https://bundlephobia.com/package/@lpm.dev/neo.query)
-[![Tests](https://img.shields.io/badge/tests-230%2F230-brightgreen.svg)](./test)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)](./tsconfig.json)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-
 ---
 
 ## ✨ Features
@@ -34,48 +28,24 @@ lpm install @lpm.dev/neo.query
 ## 🚀 Quick Start
 
 ```typescript
-import { parse, stringify, parseUrl, stringifyUrl } from '@lpm.dev/neo.query'
+import { parse, stringify, parseUrl, stringifyUrl } from "@lpm.dev/neo.query";
 
 // Parse query strings
-parse('foo=bar&baz=qux')
+parse("foo=bar&baz=qux");
 // => { foo: 'bar', baz: 'qux' }
 
 // Stringify objects
-stringify({ foo: 'bar', baz: 'qux' })
+stringify({ foo: "bar", baz: "qux" });
 // => 'baz=qux&foo=bar'
 
 // Parse URLs
-parseUrl('https://example.com/path?foo=bar#section')
+parseUrl("https://example.com/path?foo=bar#section");
 // => { url: 'https://example.com/path', query: { foo: 'bar' }, hash: '#section', ... }
 
 // Build URLs
-stringifyUrl({ url: '/api/users', query: { page: 2, limit: 20 } })
+stringifyUrl({ url: "/api/users", query: { page: 2, limit: 20 } });
 // => '/api/users?limit=20&page=2'
 ```
-
----
-
-## 📚 Table of Contents
-
-- [Features](#-features)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [API Reference](#-api-reference)
-  - [parse()](#parse)
-  - [stringify()](#stringify)
-  - [parseUrl()](#parseurl)
-  - [stringifyUrl()](#stringifyurl)
-  - [toSearchParams()](#tosearchparams)
-  - [fromSearchParams()](#fromsearchparams)
-  - [pick()](#pick)
-  - [exclude()](#exclude)
-  - [extract()](#extract)
-- [Advanced Usage](#-advanced-usage)
-- [Tree-Shaking](#-tree-shaking)
-- [Performance](#-performance)
-- [Migration](#-migration)
-- [TypeScript](#-typescript)
-- [License](#-license)
 
 ---
 
@@ -86,33 +56,33 @@ stringifyUrl({ url: '/api/users', query: { page: 2, limit: 20 } })
 Parse a query string into an object.
 
 ```typescript
-import { parse } from '@lpm.dev/neo.query'
+import { parse } from "@lpm.dev/neo.query";
 
 // Basic parsing
-parse('foo=bar&baz=qux')
+parse("foo=bar&baz=qux");
 // => { foo: 'bar', baz: 'qux' }
 
 // Nested objects (bracket notation)
-parse('user[name]=John&user[age]=30')
+parse("user[name]=John&user[age]=30");
 // => { user: { name: 'John', age: '30' } }
 
 // Nested objects (dot notation)
-parse('user.name=John&user.age=30', { allowDots: true })
+parse("user.name=John&user.age=30", { allowDots: true });
 // => { user: { name: 'John', age: '30' } }
 
 // Arrays
-parse('items[]=a&items[]=b&items[]=c')
+parse("items[]=a&items[]=b&items[]=c");
 // => { items: ['a', 'b', 'c'] }
 
 // Type parsing
-parse('page=1&limit=20&active=true', {
+parse("page=1&limit=20&active=true", {
   parseNumbers: true,
   parseBooleans: true,
-})
+});
 // => { page: 1, limit: 20, active: true }
 
 // Duplicate keys → arrays
-parse('tag=js&tag=ts&tag=node')
+parse("tag=js&tag=ts&tag=node");
 // => { tag: ['js', 'ts', 'node'] }
 ```
 
@@ -121,25 +91,25 @@ parse('tag=js&tag=ts&tag=node')
 ```typescript
 interface ParseOptions {
   // Decode URI components (default: true)
-  decode?: boolean
+  decode?: boolean;
 
   // Custom decoder function
-  decoder?: (value: string, defaultDecoder: (str: string) => string) => string
+  decoder?: (value: string, defaultDecoder: (str: string) => string) => string;
 
   // Parse numeric strings to numbers (default: false)
-  parseNumbers?: boolean
+  parseNumbers?: boolean;
 
   // Parse 'true'/'false' to booleans (default: false)
-  parseBooleans?: boolean
+  parseBooleans?: boolean;
 
   // Parse 'null' to null (default: false)
-  parseNulls?: boolean
+  parseNulls?: boolean;
 
   // Allow dot notation (default: false)
-  allowDots?: boolean
+  allowDots?: boolean;
 
   // Maximum nesting depth (default: 5)
-  depth?: number
+  depth?: number;
 }
 ```
 
@@ -148,39 +118,39 @@ interface ParseOptions {
 Convert an object to a query string.
 
 ```typescript
-import { stringify } from '@lpm.dev/neo.query'
+import { stringify } from "@lpm.dev/neo.query";
 
 // Basic stringify
-stringify({ foo: 'bar', baz: 'qux' })
+stringify({ foo: "bar", baz: "qux" });
 // => 'baz=qux&foo=bar' (alphabetically sorted)
 
 // Nested objects
-stringify({ user: { name: 'John', age: 30 } })
+stringify({ user: { name: "John", age: 30 } });
 // => 'user[age]=30&user[name]=John'
 
 // Dot notation
-stringify({ user: { name: 'John' } }, { allowDots: true })
+stringify({ user: { name: "John" } }, { allowDots: true });
 // => 'user.name=John'
 
 // Arrays (6 formats)
-stringify({ items: ['a', 'b', 'c'] })
+stringify({ items: ["a", "b", "c"] });
 // => 'items[]=a&items[]=b&items[]=c' (bracket format)
 
-stringify({ items: ['a', 'b', 'c'] }, { arrayFormat: 'index' })
+stringify({ items: ["a", "b", "c"] }, { arrayFormat: "index" });
 // => 'items[0]=a&items[1]=b&items[2]=c'
 
-stringify({ items: ['a', 'b', 'c'] }, { arrayFormat: 'comma' })
+stringify({ items: ["a", "b", "c"] }, { arrayFormat: "comma" });
 // => 'items=a,b,c'
 
-stringify({ items: ['a', 'b', 'c'] }, { arrayFormat: 'repeat' })
+stringify({ items: ["a", "b", "c"] }, { arrayFormat: "repeat" });
 // => 'items=a&items=b&items=c'
 
 // Objects in arrays
-stringify({ users: [{ name: 'Alice' }, { name: 'Bob' }] })
+stringify({ users: [{ name: "Alice" }, { name: "Bob" }] });
 // => 'users[0][name]=Alice&users[1][name]=Bob'
 
 // Disable sorting
-stringify({ z: '3', a: '1' }, { sort: false })
+stringify({ z: "3", a: "1" }, { sort: false });
 // => 'z=3&a=1' (insertion order)
 ```
 
@@ -189,34 +159,40 @@ stringify({ z: '3', a: '1' }, { sort: false })
 ```typescript
 interface StringifyOptions {
   // Array format (default: 'bracket')
-  arrayFormat?: 'bracket' | 'index' | 'comma' | 'separator' | 'repeat' | 'bracket-separator'
+  arrayFormat?:
+    | "bracket"
+    | "index"
+    | "comma"
+    | "separator"
+    | "repeat"
+    | "bracket-separator";
 
   // Array separator for 'separator' and 'bracket-separator' formats (default: ',')
-  arraySeparator?: string
+  arraySeparator?: string;
 
   // Allow dot notation (default: false)
-  allowDots?: boolean
+  allowDots?: boolean;
 
   // Skip null values (default: true)
-  skipNull?: boolean
+  skipNull?: boolean;
 
   // Skip undefined values (default: true)
-  skipUndefined?: boolean
+  skipUndefined?: boolean;
 
   // Skip empty strings (default: false)
-  skipEmptyString?: boolean
+  skipEmptyString?: boolean;
 
   // Encode URI components (default: true)
-  encode?: boolean
+  encode?: boolean;
 
   // Use strict RFC 3986 encoding (default: true)
-  strict?: boolean
+  strict?: boolean;
 
   // Custom encoder function
-  encoder?: (value: string, defaultEncoder: (str: string) => string) => string
+  encoder?: (value: string, defaultEncoder: (str: string) => string) => string;
 
   // Sort keys alphabetically (default: true)
-  sort?: boolean | ((a: string, b: string) => number)
+  sort?: boolean | ((a: string, b: string) => number);
 }
 ```
 
@@ -225,9 +201,9 @@ interface StringifyOptions {
 Parse a full URL with query string into components.
 
 ```typescript
-import { parseUrl } from '@lpm.dev/neo.query'
+import { parseUrl } from "@lpm.dev/neo.query";
 
-parseUrl('https://example.com/path?foo=bar&baz=qux#section')
+parseUrl("https://example.com/path?foo=bar&baz=qux#section");
 // => {
 //   url: 'https://example.com/path',
 //   query: { foo: 'bar', baz: 'qux' },
@@ -236,9 +212,9 @@ parseUrl('https://example.com/path?foo=bar&baz=qux#section')
 // }
 
 // With type parsing
-parseUrl('https://api.example.com/users?page=2&limit=20', {
+parseUrl("https://api.example.com/users?page=2&limit=20", {
   parseNumbers: true,
-})
+});
 // => {
 //   url: 'https://api.example.com/users',
 //   query: { page: 2, limit: 20 },
@@ -250,10 +226,10 @@ parseUrl('https://api.example.com/users?page=2&limit=20', {
 
 ```typescript
 interface ParsedUrl {
-  url: string // Base URL without query/hash
-  query: ParsedQuery // Parsed query object
-  queryString: string // Original query string
-  hash: string // Hash fragment (with #)
+  url: string; // Base URL without query/hash
+  query: ParsedQuery; // Parsed query object
+  queryString: string; // Original query string
+  hash: string; // Hash fragment (with #)
 }
 ```
 
@@ -262,26 +238,26 @@ interface ParsedUrl {
 Build a URL from components with query string.
 
 ```typescript
-import { stringifyUrl } from '@lpm.dev/neo.query'
+import { stringifyUrl } from "@lpm.dev/neo.query";
 
 stringifyUrl({
-  url: 'https://example.com/path',
-  query: { foo: 'bar', baz: 'qux' },
-})
+  url: "https://example.com/path",
+  query: { foo: "bar", baz: "qux" },
+});
 // => 'https://example.com/path?baz=qux&foo=bar'
 
 stringifyUrl({
-  url: '/api/users',
+  url: "/api/users",
   query: { page: 2, limit: 20 },
-  hash: 'results',
-})
+  hash: "results",
+});
 // => '/api/users?limit=20&page=2#results'
 
 // Merge with existing query string
 stringifyUrl({
-  url: '/search?q=test',
+  url: "/search?q=test",
   query: { page: 2 },
-})
+});
 // => '/search?q=test&page=2'
 ```
 
@@ -289,9 +265,9 @@ stringifyUrl({
 
 ```typescript
 interface UrlComponents {
-  url: string // Base URL (can include existing query string)
-  query?: StringifiableQuery // Query object to append
-  hash?: string // Hash fragment (with or without #)
+  url: string; // Base URL (can include existing query string)
+  query?: StringifiableQuery; // Query object to append
+  hash?: string; // Hash fragment (with or without #)
 }
 ```
 
@@ -300,16 +276,16 @@ interface UrlComponents {
 Convert a query object to URLSearchParams.
 
 ```typescript
-import { toSearchParams } from '@lpm.dev/neo.query'
+import { toSearchParams } from "@lpm.dev/neo.query";
 
-const params = toSearchParams({ foo: 'bar', baz: 'qux' })
+const params = toSearchParams({ foo: "bar", baz: "qux" });
 // => URLSearchParams { 'foo' => 'bar', 'baz' => 'qux' }
 
 // Use with fetch
-fetch(`/api/users?${params}`)
+fetch(`/api/users?${params}`);
 
 // Nested objects
-toSearchParams({ user: { name: 'John', age: 30 } })
+toSearchParams({ user: { name: "John", age: 30 } });
 // => URLSearchParams { 'user[name]' => 'John', 'user[age]' => '30' }
 ```
 
@@ -318,20 +294,20 @@ toSearchParams({ user: { name: 'John', age: 30 } })
 Convert URLSearchParams to a query object.
 
 ```typescript
-import { fromSearchParams } from '@lpm.dev/neo.query'
+import { fromSearchParams } from "@lpm.dev/neo.query";
 
-const params = new URLSearchParams('foo=bar&baz=qux')
-fromSearchParams(params)
+const params = new URLSearchParams("foo=bar&baz=qux");
+fromSearchParams(params);
 // => { foo: 'bar', baz: 'qux' }
 
 // With type parsing
-const params = new URLSearchParams('page=2&active=true')
-fromSearchParams(params, { parseNumbers: true, parseBooleans: true })
+const params = new URLSearchParams("page=2&active=true");
+fromSearchParams(params, { parseNumbers: true, parseBooleans: true });
 // => { page: 2, active: true }
 
 // From URL
-const url = new URL('https://example.com/path?foo=bar')
-fromSearchParams(url.searchParams)
+const url = new URL("https://example.com/path?foo=bar");
+fromSearchParams(url.searchParams);
 // => { foo: 'bar' }
 ```
 
@@ -340,23 +316,23 @@ fromSearchParams(url.searchParams)
 Pick specific keys from a query object.
 
 ```typescript
-import { pick } from '@lpm.dev/neo.query'
+import { pick } from "@lpm.dev/neo.query";
 
 // Simple keys
-pick({ foo: 'bar', baz: 'qux', extra: 'value' }, ['foo', 'baz'])
+pick({ foo: "bar", baz: "qux", extra: "value" }, ["foo", "baz"]);
 // => { foo: 'bar', baz: 'qux' }
 
 // Nested keys (dot notation)
 pick(
   {
-    user: { name: 'John', age: 30, password: 'secret' },
+    user: { name: "John", age: 30, password: "secret" },
   },
-  ['user.name', 'user.age']
-)
+  ["user.name", "user.age"],
+);
 // => { user: { name: 'John', age: 30 } }
 
 // Whitelist allowed params (security)
-const safeParams = pick(userInput, ['search', 'page', 'limit'])
+const safeParams = pick(userInput, ["search", "page", "limit"]);
 ```
 
 ### exclude()
@@ -364,23 +340,23 @@ const safeParams = pick(userInput, ['search', 'page', 'limit'])
 Exclude specific keys from a query object.
 
 ```typescript
-import { exclude } from '@lpm.dev/neo.query'
+import { exclude } from "@lpm.dev/neo.query";
 
 // Simple keys
-exclude({ foo: 'bar', baz: 'qux', extra: 'value' }, ['extra'])
+exclude({ foo: "bar", baz: "qux", extra: "value" }, ["extra"]);
 // => { foo: 'bar', baz: 'qux' }
 
 // Nested keys (dot notation)
 exclude(
   {
-    user: { name: 'John', age: 30, password: 'secret' },
+    user: { name: "John", age: 30, password: "secret" },
   },
-  ['user.password']
-)
+  ["user.password"],
+);
 // => { user: { name: 'John', age: 30 } }
 
 // Remove sensitive data before logging
-const safe = exclude(data, ['password', 'apiKey', 'user.token'])
+const safe = exclude(data, ["password", "apiKey", "user.token"]);
 ```
 
 ### extract()
@@ -388,15 +364,15 @@ const safe = exclude(data, ['password', 'apiKey', 'user.token'])
 Extract query string from a URL.
 
 ```typescript
-import { extract } from '@lpm.dev/neo.query'
+import { extract } from "@lpm.dev/neo.query";
 
-extract('https://example.com/path?foo=bar&baz=qux')
+extract("https://example.com/path?foo=bar&baz=qux");
 // => 'foo=bar&baz=qux'
 
-extract('https://example.com/path?foo=bar#section')
+extract("https://example.com/path?foo=bar#section");
 // => 'foo=bar' (hash removed)
 
-extract('?foo=bar')
+extract("?foo=bar");
 // => 'foo=bar'
 ```
 
@@ -409,13 +385,13 @@ extract('?foo=bar')
 Parse strings to their appropriate types:
 
 ```typescript
-import { parse } from '@lpm.dev/neo.query'
+import { parse } from "@lpm.dev/neo.query";
 
-parse('page=1&limit=20&score=98.5&active=true&deleted=false&data=null', {
+parse("page=1&limit=20&score=98.5&active=true&deleted=false&data=null", {
   parseNumbers: true, // '1' → 1, '98.5' → 98.5
   parseBooleans: true, // 'true' → true, 'false' → false
   parseNulls: true, // 'null' → null
-})
+});
 // => {
 //   page: 1,
 //   limit: 20,
@@ -431,10 +407,12 @@ parse('page=1&limit=20&score=98.5&active=true&deleted=false&data=null', {
 Handle complex nested structures:
 
 ```typescript
-import { parse, stringify } from '@lpm.dev/neo.query'
+import { parse, stringify } from "@lpm.dev/neo.query";
 
 // Bracket notation (default)
-parse('user[profile][name]=John&user[profile][contact][email]=john@example.com')
+parse(
+  "user[profile][name]=John&user[profile][contact][email]=john@example.com",
+);
 // => {
 //   user: {
 //     profile: {
@@ -445,18 +423,18 @@ parse('user[profile][name]=John&user[profile][contact][email]=john@example.com')
 // }
 
 // Dot notation (opt-in)
-parse('user.profile.name=John', { allowDots: true })
+parse("user.profile.name=John", { allowDots: true });
 // => { user: { profile: { name: 'John' } } }
 
 // Stringify nested
 stringify({
   user: {
     profile: {
-      name: 'John',
-      contact: { email: 'john@example.com' },
+      name: "John",
+      contact: { email: "john@example.com" },
     },
   },
-})
+});
 // => 'user[profile][contact][email]=john%40example.com&user[profile][name]=John'
 ```
 
@@ -465,32 +443,32 @@ stringify({
 Choose from 6 different array formats:
 
 ```typescript
-import { stringify } from '@lpm.dev/neo.query'
+import { stringify } from "@lpm.dev/neo.query";
 
-const data = { items: ['a', 'b', 'c'] }
+const data = { items: ["a", "b", "c"] };
 
 // 1. Bracket (default)
-stringify(data)
+stringify(data);
 // => 'items[]=a&items[]=b&items[]=c'
 
 // 2. Index
-stringify(data, { arrayFormat: 'index' })
+stringify(data, { arrayFormat: "index" });
 // => 'items[0]=a&items[1]=b&items[2]=c'
 
 // 3. Comma
-stringify(data, { arrayFormat: 'comma' })
+stringify(data, { arrayFormat: "comma" });
 // => 'items=a,b,c'
 
 // 4. Separator (custom)
-stringify(data, { arrayFormat: 'separator', arraySeparator: '|' })
+stringify(data, { arrayFormat: "separator", arraySeparator: "|" });
 // => 'items=a|b|c'
 
 // 5. Repeat
-stringify(data, { arrayFormat: 'repeat' })
+stringify(data, { arrayFormat: "repeat" });
 // => 'items=a&items=b&items=c'
 
 // 6. Bracket-separator
-stringify(data, { arrayFormat: 'bracket-separator', arraySeparator: '|' })
+stringify(data, { arrayFormat: "bracket-separator", arraySeparator: "|" });
 // => 'items[]=a|b|c'
 ```
 
@@ -499,17 +477,17 @@ stringify(data, { arrayFormat: 'bracket-separator', arraySeparator: '|' })
 Parse, modify, and rebuild URLs:
 
 ```typescript
-import { parseUrl, stringifyUrl } from '@lpm.dev/neo.query'
+import { parseUrl, stringifyUrl } from "@lpm.dev/neo.query";
 
 // Parse URL
-const parsed = parseUrl('https://api.example.com/users?page=1&limit=10')
+const parsed = parseUrl("https://api.example.com/users?page=1&limit=10");
 
 // Modify query
-parsed.query.page = 2
-parsed.query.sort = 'name'
+parsed.query.page = 2;
+parsed.query.sort = "name";
 
 // Rebuild URL
-const newUrl = stringifyUrl(parsed)
+const newUrl = stringifyUrl(parsed);
 // => 'https://api.example.com/users?limit=10&page=2&sort=name'
 ```
 
@@ -518,18 +496,18 @@ const newUrl = stringifyUrl(parsed)
 Filter sensitive data from query parameters:
 
 ```typescript
-import { pick, exclude } from '@lpm.dev/neo.query'
+import { pick, exclude } from "@lpm.dev/neo.query";
 
 // Whitelist approach (more secure)
-const allowedParams = ['search', 'page', 'limit', 'sort']
-const safe = pick(userInput, allowedParams)
+const allowedParams = ["search", "page", "limit", "sort"];
+const safe = pick(userInput, allowedParams);
 
 // Blacklist approach
-const sensitive = ['password', 'apiKey', 'token', 'user.password']
-const safe = exclude(data, sensitive)
+const sensitive = ["password", "apiKey", "token", "user.password"];
+const safe = exclude(data, sensitive);
 
 // Before logging
-console.log(exclude(query, ['password', 'apiKey', 'session.token']))
+console.log(exclude(query, ["password", "apiKey", "session.token"]));
 ```
 
 ### URLSearchParams Integration
@@ -537,20 +515,20 @@ console.log(exclude(query, ['password', 'apiKey', 'session.token']))
 Seamless integration with native URLSearchParams:
 
 ```typescript
-import { toSearchParams, fromSearchParams } from '@lpm.dev/neo.query'
+import { toSearchParams, fromSearchParams } from "@lpm.dev/neo.query";
 
 // To URLSearchParams
 const params = toSearchParams({
-  user: { name: 'John', age: 30 },
-  tags: ['javascript', 'typescript'],
-})
+  user: { name: "John", age: 30 },
+  tags: ["javascript", "typescript"],
+});
 
 // Use with fetch
-fetch(`/api/users?${params}`)
+fetch(`/api/users?${params}`);
 
 // From URLSearchParams
-const url = new URL('https://example.com/path?user[name]=John&user[age]=30')
-const query = fromSearchParams(url.searchParams)
+const url = new URL("https://example.com/path?user[name]=John&user[age]=30");
+const query = fromSearchParams(url.searchParams);
 // => { user: { name: 'John', age: '30' } }
 ```
 
@@ -562,22 +540,22 @@ Import only what you need for optimal bundle size:
 
 ```typescript
 // Parse only (~5.66 KB)
-import { parse } from '@lpm.dev/neo.query/parse'
+import { parse } from "@lpm.dev/neo.query/parse";
 
 // Stringify only (~5.95 KB)
-import { stringify } from '@lpm.dev/neo.query/stringify'
+import { stringify } from "@lpm.dev/neo.query/stringify";
 
 // URL utils (~13.57 KB, includes parse + stringify)
-import { parseUrl, stringifyUrl } from '@lpm.dev/neo.query/url'
+import { parseUrl, stringifyUrl } from "@lpm.dev/neo.query/url";
 
 // URLSearchParams compat (~12.01 KB, includes parse + stringify)
-import { toSearchParams, fromSearchParams } from '@lpm.dev/neo.query/compat'
+import { toSearchParams, fromSearchParams } from "@lpm.dev/neo.query/compat";
 
 // Utilities (~2.72 KB)
-import { pick, exclude } from '@lpm.dev/neo.query/utils'
+import { pick, exclude } from "@lpm.dev/neo.query/utils";
 
 // Everything (~16.48 KB)
-import * as query from '@lpm.dev/neo.query'
+import * as query from "@lpm.dev/neo.query";
 ```
 
 **Typical usage** (parse + stringify): **~11-12 KB** (74% smaller than qs)
@@ -588,18 +566,19 @@ import * as query from '@lpm.dev/neo.query'
 
 Performance comparison vs popular alternatives:
 
-| Metric | neo.query | qs | query-string |
-|--------|-----------|-----|--------------|
-| **Parse Speed** | **Fastest** | 20-40% slower | 10-25% slower |
-| **Stringify Speed** | **Fastest** | 20-38% slower | 12-30% slower |
-| **Bundle (Full)** | 16.48 KB | 43 KB | 7 KB |
-| **Bundle (Typical)** | **11-12 KB** | 43 KB | 7 KB |
-| **Memory Usage** | **Lowest** | 40% more | 15% more |
-| **Features** | **Most** | Many | Basic |
+| Metric               | neo.query    | qs            | query-string  |
+| -------------------- | ------------ | ------------- | ------------- |
+| **Parse Speed**      | **Fastest**  | 20-40% slower | 10-25% slower |
+| **Stringify Speed**  | **Fastest**  | 20-38% slower | 12-30% slower |
+| **Bundle (Full)**    | 16.48 KB     | 43 KB         | 7 KB          |
+| **Bundle (Typical)** | **11-12 KB** | 43 KB         | 7 KB          |
+| **Memory Usage**     | **Lowest**   | 40% more      | 15% more      |
+| **Features**         | **Most**     | Many          | Basic         |
 
 See [BENCHMARKS.md](./BENCHMARKS.md) for detailed performance analysis.
 
 **Key Highlights**:
+
 - ✅ **20-40% faster** than qs
 - ✅ **62% smaller** than qs (16.48 KB vs 43 KB)
 - ✅ **74% smaller** when tree-shaken (11-12 KB vs 43 KB)
@@ -615,23 +594,25 @@ neo.query is designed to be a drop-in replacement for most qs use cases:
 
 ```typescript
 // Before (qs)
-import qs from 'qs'
-const parsed = qs.parse(queryString)
-const stringified = qs.stringify(object)
+import qs from "qs";
+const parsed = qs.parse(queryString);
+const stringified = qs.stringify(object);
 
 // After (neo.query)
-import { parse, stringify } from '@lpm.dev/neo.query'
-const parsed = parse(queryString)
-const stringified = stringify(object)
+import { parse, stringify } from "@lpm.dev/neo.query";
+const parsed = parse(queryString);
+const stringified = stringify(object);
 ```
 
 **Benefits**:
+
 - ✅ 20-40% faster
 - ✅ 62% smaller bundle (16.48 KB vs 43 KB)
 - ✅ Native TypeScript
 - ✅ More features (URL utils, filtering)
 
 **API Differences**:
+
 - `skipNulls` → `skipNull`
 - `allowDots` → same
 - `arrayFormat` → same (6 formats)
@@ -640,22 +621,24 @@ const stringified = stringify(object)
 
 ```typescript
 // Before (query-string)
-import queryString from 'query-string'
-const parsed = queryString.parse(url)
-const stringified = queryString.stringify(object)
+import queryString from "query-string";
+const parsed = queryString.parse(url);
+const stringified = queryString.stringify(object);
 
 // After (neo.query)
-import { parse, stringify } from '@lpm.dev/neo.query'
-const parsed = parse(url)
-const stringified = stringify(object)
+import { parse, stringify } from "@lpm.dev/neo.query";
+const parsed = parse(url);
+const stringified = stringify(object);
 ```
 
 **Benefits**:
+
 - ✅ 10-30% faster
 - ✅ More features (nested objects, URL utils, filtering)
 - ✅ Native TypeScript
 
 **Bundle Impact**:
+
 - Similar when tree-shaken (11-12 KB vs 7 KB)
 - Worth it for comprehensive features
 
@@ -666,28 +649,29 @@ const stringified = stringify(object)
 Full TypeScript support with type guards:
 
 ```typescript
-import { parse, stringify } from '@lpm.dev/neo.query'
-import type { ParsedQuery, StringifyOptions } from '@lpm.dev/neo.query'
+import { parse, stringify } from "@lpm.dev/neo.query";
+import type { ParsedQuery, StringifyOptions } from "@lpm.dev/neo.query";
 
 // Type-safe parsing
-const query: ParsedQuery = parse('foo=bar&baz=qux')
+const query: ParsedQuery = parse("foo=bar&baz=qux");
 
 // Type guards
-const value: unknown = query.foo
-if (typeof value === 'string') {
-  console.log(value.toUpperCase()) // TypeScript knows it's a string
+const value: unknown = query.foo;
+if (typeof value === "string") {
+  console.log(value.toUpperCase()); // TypeScript knows it's a string
 }
 
 // Type-safe stringify options
 const options: StringifyOptions = {
-  arrayFormat: 'comma',
+  arrayFormat: "comma",
   skipNull: true,
   sort: (a, b) => a.localeCompare(b),
-}
-stringify(query, options)
+};
+stringify(query, options);
 ```
 
 **All types are exported**:
+
 - `ParsedQuery` - Parsed query object type
 - `StringifiableQuery` - Input for stringify
 - `QueryValue` - Value types (string | number | boolean | null | undefined)
@@ -704,7 +688,7 @@ stringify(query, options)
 ### API Client
 
 ```typescript
-import { stringify, parseUrl } from '@lpm.dev/neo.query'
+import { stringify, parseUrl } from "@lpm.dev/neo.query";
 
 class ApiClient {
   async fetchUsers(filters: any) {
@@ -712,18 +696,18 @@ class ApiClient {
       ...filters,
       limit: 50,
       offset: 0,
-    })
+    });
 
-    const response = await fetch(`/api/users?${queryString}`)
-    return response.json()
+    const response = await fetch(`/api/users?${queryString}`);
+    return response.json();
   }
 
   async updateUrl(newFilters: any) {
-    const current = parseUrl(window.location.href)
-    const merged = { ...current.query, ...newFilters }
+    const current = parseUrl(window.location.href);
+    const merged = { ...current.query, ...newFilters };
 
-    const newUrl = `${current.url}?${stringify(merged)}`
-    window.history.pushState({}, '', newUrl)
+    const newUrl = `${current.url}?${stringify(merged)}`;
+    window.history.pushState({}, "", newUrl);
   }
 }
 ```
@@ -762,41 +746,41 @@ function SearchPage() {
 ### Form Submission
 
 ```typescript
-import { stringify, exclude } from '@lpm.dev/neo.query'
+import { stringify, exclude } from "@lpm.dev/neo.query";
 
 async function submitForm(formData: any) {
   // Remove sensitive fields
-  const safe = exclude(formData, ['password', 'confirmPassword'])
+  const safe = exclude(formData, ["password", "confirmPassword"]);
 
   // Stringify for submission
-  const params = stringify(safe)
+  const params = stringify(safe);
 
-  const response = await fetch('/api/submit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  const response = await fetch("/api/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: params,
-  })
+  });
 
-  return response.json()
+  return response.json();
 }
 ```
 
 ### Logging Without Sensitive Data
 
 ```typescript
-import { exclude } from '@lpm.dev/neo.query'
+import { exclude } from "@lpm.dev/neo.query";
 
 function logApiRequest(url: string, params: any) {
   // Remove sensitive data before logging
   const safe = exclude(params, [
-    'password',
-    'apiKey',
-    'token',
-    'user.password',
-    'session.token',
-  ])
+    "password",
+    "apiKey",
+    "token",
+    "user.password",
+    "session.token",
+  ]);
 
-  console.log('API Request:', url, safe)
+  console.log("API Request:", url, safe);
 }
 ```
 
@@ -804,4 +788,4 @@ function logApiRequest(url: string, params: any) {
 
 ## 📄 License
 
-MIT © [LPM.dev](https://lpm.dev)
+MIT
